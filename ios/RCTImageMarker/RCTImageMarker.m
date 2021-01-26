@@ -561,21 +561,21 @@ RCT_EXPORT_METHOD(readPictureDegree:(nonnull NSDictionary *)src resolver:(RCTPro
         switch (image.imageOrientation) {
          case UIImageOrientationDown:
          case UIImageOrientationDownMirrored:
-             resolve('180');
+             resolve(@(180));
              break;
  
          case UIImageOrientationLeft:
          case UIImageOrientationLeftMirrored:
-             resolve('270');
+             resolve(@(270));
              break;
  
          case UIImageOrientationRight:
          case UIImageOrientationRightMirrored:
-             resolve('90');
+             resolve(@(90));
              break;
          case UIImageOrientationUp:
          case UIImageOrientationUpMirrored:
-            resolve('0');
+            resolve(@(0));
             break;
      }
     }];
