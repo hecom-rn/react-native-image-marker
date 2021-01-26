@@ -543,6 +543,44 @@ RCT_EXPORT_METHOD(markWithImage: (nonnull NSDictionary *)src
     }];
 }
 
+RCT_EXPORT_METHOD(readPictureDegree:(nonnull NSDictionary *)src resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+    //这里之前是loadImageOrDataWithTag
+    [[self.bridge moduleForName:@"ImageLoader"] loadImageWithURLRequest:[RCTConvert NSURLRequest:src] callback:^(NSError *error, UIImage *image) {
+        if (error || image == nil) {
+            NSString* path = src[@"uri"];
+            image = [[UIImage alloc] initWithContentsOfFile:path];
+            if (image == nil) {
+                NSLog(@"Can't retrieve the file from the path");
+                
+                reject(@"error", @"Can't retrieve the file from the path.", error);
+                return;
+            }
+        }
+
+        switch (self.imageOrientation) {
+         case UIImageOrientationDown:
+         case UIImageOrientationDownMirrored:
+             resolve('180');
+             break;
+ 
+         case UIImageOrientationLeft:
+         case UIImageOrientationLeftMirrored:
+             resolve('270');
+             break;
+ 
+         case UIImageOrientationRight:
+         case UIImageOrientationRightMirrored:
+             resolve('90');
+             break;
+         case UIImageOrientationUp:
+         case UIImageOrientationUpMirrored:
+            resolve('0');
+            break;
+     }
+    }];
+}
+
 RCT_EXPORT_METHOD(markWithImageByPosition: (nonnull NSDictionary *)src
                   markImagePath: (nonnull NSDictionary *)markerSrc
                   position:(MarkerPosition)position
