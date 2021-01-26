@@ -558,7 +558,7 @@ RCT_EXPORT_METHOD(readPictureDegree:(nonnull NSDictionary *)src resolver:(RCTPro
             }
         }
 
-        switch (self.imageOrientation) {
+        switch (image.imageOrientation) {
          case UIImageOrientationDown:
          case UIImageOrientationDownMirrored:
              resolve('180');
