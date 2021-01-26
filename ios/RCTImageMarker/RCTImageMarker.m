@@ -551,9 +551,7 @@ RCT_EXPORT_METHOD(readPictureDegree:(nonnull NSDictionary *)src resolver:(RCTPro
             NSString* path = src[@"uri"];
             image = [[UIImage alloc] initWithContentsOfFile:path];
             if (image == nil) {
-                NSLog(@"Can't retrieve the file from the path");
-                
-                reject(@"error", @"Can't retrieve the file from the path.", error);
+                resolve(@(0));
                 return;
             }
         }
@@ -577,6 +575,10 @@ RCT_EXPORT_METHOD(readPictureDegree:(nonnull NSDictionary *)src resolver:(RCTPro
          case UIImageOrientationUpMirrored:
             resolve(@(0));
             break;
+        default: 
+            resolve(@(0));
+            break;
+         
      }
     }];
 }
