@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import android.media.ExifInterface;
 
 import static com.facebook.drawee.backends.pipeline.Fresco.getImagePipeline;
 import static com.jimmydaddy.imagemarker.Utils.getStringSafe;
@@ -456,6 +457,34 @@ public class ImageMarkerManager extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void readPictureDegree(final ReadableMap src, final Promise promise) {
+        int degree = 0;
+        try {
+            String uri = src.getString(PROP_ICON_URI);
+            if(uri.startsWith("file://")){
+                uri = uri.replace("file://","");
+            }
+            ExifInterface exifInterface = new ExifInterface(uri);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            Log.i("tag", "读取角度-" + orientation);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+            promise.resolve(degree);
+        } catch (Exception e) {
+            e.printStackTrace();
+            promise.resolve(degree);
+        }
+    }
 
     /**
      *
@@ -484,6 +513,8 @@ public class ImageMarkerManager extends ReactContextBaseJavaModule {
             String filename,
             final String saveFormat,
             Integer maxSize,
+            final Integer width,
+            final Integer height,
             final Promise promise
     ) {
         if (TextUtils.isEmpty(mark)){
@@ -513,8 +544,16 @@ public class ImageMarkerManager extends ReactContextBaseJavaModule {
                     @Override
                     public void onNewResultImpl(Bitmap bitmap) {
                         if (bitmap != null) {
+                            float fontScale=1f;
+                            if (width != null && height != null && fontSize != null) {
+                                if(1f*width/height==1f*bitmap.getWidth()/bitmap.getHeight()){
+                                    fontScale  =  1f*bitmap.getWidth()/width;
+                                }else {
+                                    fontScale  =  1f*bitmap.getHeight()/width;
+                                }
+                            }
                             Bitmap bg = Utils.scaleBitmap(bitmap, scale);
-                            markImageByText(bg, mark, null, color, fontName, fontSize, myShadowStyle, myTextBackgroundStyle, X, Y, quality, dest, saveFormat, promise);
+                            markImageByText(bg, mark, null, color, fontName, (int)(fontScale* fontSize), myShadowStyle, myTextBackgroundStyle, X, Y, quality, dest, saveFormat, promise);
                         } else {
                             promise.reject( "marker error","Can't retrieve the file from the src: " + uri);
                         }
@@ -580,6 +619,8 @@ public class ImageMarkerManager extends ReactContextBaseJavaModule {
             String filename,
             final String saveFormat,
             Integer maxSize,
+            final Integer width,
+            final Integer height,
             final Promise promise
     ) {
         if (TextUtils.isEmpty(mark)){
@@ -609,10 +650,20 @@ public class ImageMarkerManager extends ReactContextBaseJavaModule {
                     @Override
                     public void onNewResultImpl(Bitmap bitmap) {
                         if (bitmap != null) {
-                            Bitmap bg = Utils.scaleBitmap(bitmap, scale);
-                            markImageByText(bg, mark, position, color, fontName, fontSize, myShadowStyle, myTextBackgroundStyle, null, null, quality, dest, saveFormat, promise);
-                        } else {
-                            promise.reject( "marker error","Can't retrieve the file from the src: " + uri);
+                            if (bitmap != null) {
+                                float fontScale = 1f;
+                                if (width != null && height != null && fontSize != null) {
+                                    if (1f * width / height == 1f * bitmap.getWidth() / bitmap.getHeight()) {
+                                        fontScale = 1f * bitmap.getWidth() / width;
+                                    } else {
+                                        fontScale = 1f * bitmap.getHeight() / width;
+                                    }
+                                }
+                                Bitmap bg = Utils.scaleBitmap(bitmap, scale);
+                                markImageByText(bg, mark, position, color, fontName, (int) (fontScale * fontSize), myShadowStyle, myTextBackgroundStyle, null, null, quality, dest, saveFormat, promise);
+                            } else {
+                                promise.reject("marker error", "Can't retrieve the file from the src: " + uri);
+                            }
                         }
                     }
 

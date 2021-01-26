@@ -67,6 +67,8 @@ export type TextMarkOption = {
   textBackgroundStyle: TextBackgroundStyle,
   saveFormat?: ImageFormat,
   maxSize?: number, // android only see #49 #42
+  height?: number,
+  width?: number,
 }
 
 export type ImageMarkOption = {
@@ -104,6 +106,8 @@ export default class Marker {
       filename,
       saveFormat,
       maxSize = 2048,
+      height,
+      width,
     } = option
 
     if (!src) {
@@ -137,6 +141,8 @@ export default class Marker {
         filename,
         saveFormat,
         maxSize,
+        width,
+        height,
       )
     } else {
       return ImageMarker.addTextByPostion(
@@ -152,7 +158,9 @@ export default class Marker {
         quality,
         filename,
         saveFormat,
-        maxSize
+        maxSize,
+        width,
+        height,
       )
     }
   }
@@ -221,5 +229,17 @@ export default class Marker {
         maxSize
       )
     }
+  }
+  static readPictureDegree (src: ImageSourcePropType): Promise<number> {
+    let srcObj: any = resolveAssetSource(src)
+    if (!srcObj) {
+      srcObj = {
+        uri: src,
+        __packager_asset: false
+      }
+    }
+    return ImageMarker.readPictureDegree(
+      srcObj
+    )
   }
 }
