@@ -405,6 +405,8 @@ RCT_EXPORT_METHOD(addText: (nonnull NSDictionary *)src
                   filename: (NSString *)filename
                   saveFormat: (NSString *)saveFormat
                   maxSize:(NSInteger)maxSize
+                  width:(NSInteger)width
+                  height:(NSInteger)height
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -419,9 +421,18 @@ RCT_EXPORT_METHOD(addText: (nonnull NSDictionary *)src
                 return;
             }
         }
+
+        CGFloat fontScale= 1.0;
+        if(width != nil && height != nil ){
+            if(1.0*width/height == 1.0*image.size.width/image.size.height){
+                fontScale = 1.0*image.size.width/width;
+            }else{
+                fontScale = 1.0*image.size.height/width;
+            }
+        }
         
         // Do mark
-        UIFont* font = [UIFont fontWithName:fontName size:fontSize];
+        UIFont* font = [UIFont fontWithName:fontName size:fontSize*fontScale];
         UIColor* uiColor = [self getColor:color];
         NSShadow* shadow = [self getShadowStyle: shadowStyle];
         TextBackground* textBackground = [self getTextBackgroundStyle: textBackgroundStyle];       
@@ -452,6 +463,8 @@ RCT_EXPORT_METHOD(addTextByPostion: (nonnull NSDictionary *)src
                   filename: (NSString *)filename
                   saveFormat: (NSString *)saveFormat
                   maxSize:(NSInteger)maxSize
+                  width:(NSInteger)width
+                  height:(NSInteger)height
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -471,8 +484,17 @@ RCT_EXPORT_METHOD(addTextByPostion: (nonnull NSDictionary *)src
             }
         }
         
+        CGFloat fontScale= 1.0;
+        if(width != nil && height != nil ){
+            if(1.0*width/height == 1.0*image.size.width/image.size.height){
+                fontScale = 1.0*image.size.width/width;
+            }else{
+                fontScale = 1.0*image.size.height/width;
+            }
+        }
+        
         // Do mark
-        UIFont* font = [UIFont fontWithName:fontName size:fontSize];
+        UIFont* font = [UIFont fontWithName:fontName size:fontSize*fontScale];
         UIColor* uiColor = [self getColor:color];
         NSShadow* shadow = [self getShadowStyle: shadowStyle];
         TextBackground* textBackground = [self getTextBackgroundStyle: textBackgroundStyle];
