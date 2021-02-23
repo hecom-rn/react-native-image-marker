@@ -106,8 +106,8 @@ export default class Marker {
       filename,
       saveFormat,
       maxSize = 2048,
-      height,
-      width,
+      height=0,
+      width=0,
     } = option
 
     if (!src) {
