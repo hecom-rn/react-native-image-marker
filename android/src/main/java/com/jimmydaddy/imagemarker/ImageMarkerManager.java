@@ -545,7 +545,7 @@ public class ImageMarkerManager extends ReactContextBaseJavaModule {
                     public void onNewResultImpl(Bitmap bitmap) {
                         if (bitmap != null) {
                             float fontScale=1f;
-                            if (width != null && height != null && fontSize != null) {
+                            if (width != null && height != null && width != 0 && height != 0 && fontSize != null) {
                                 if(1f*width/height==1f*bitmap.getWidth()/bitmap.getHeight()){
                                     fontScale  =  1f*bitmap.getWidth()/width;
                                 }else {
@@ -652,7 +652,7 @@ public class ImageMarkerManager extends ReactContextBaseJavaModule {
                         if (bitmap != null) {
                             if (bitmap != null) {
                                 float fontScale = 1f;
-                                if (width != null && height != null && fontSize != null) {
+                                if (width != null && height != null && width != 0 && height != 0 && fontSize != null) {
                                     if (1f * width / height == 1f * bitmap.getWidth() / bitmap.getHeight()) {
                                         fontScale = 1f * bitmap.getWidth() / width;
                                     } else {

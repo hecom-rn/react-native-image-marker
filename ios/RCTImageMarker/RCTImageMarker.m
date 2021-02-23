@@ -423,7 +423,7 @@ RCT_EXPORT_METHOD(addText: (nonnull NSDictionary *)src
         }
 
         CGFloat fontScale= 1.0;
-        if(width != nil && height != nil ){
+        if(width != nil && height != nil && width != 0 && height != 0 ){
             if(1.0*width/height == 1.0*image.size.width/image.size.height){
                 fontScale = 1.0*image.size.width/width;
             }else{
@@ -485,7 +485,7 @@ RCT_EXPORT_METHOD(addTextByPostion: (nonnull NSDictionary *)src
         }
         
         CGFloat fontScale= 1.0;
-        if(width != nil && height != nil ){
+        if(width != nil && height != nil && width != 0 && height != 0)
             if(1.0*width/height == 1.0*image.size.width/image.size.height){
                 fontScale = 1.0*image.size.width/width;
             }else{
